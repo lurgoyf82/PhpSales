@@ -22,6 +22,8 @@ Execute the following command from the project root:
 docker compose -f docker-compose.yml up -d
 ```
 
+And you will be able to access the example at `http://localhost:8080`.
+
 Or if you prefer using PHP directly on your machine
 ensure you have PHP installed and run the following command:
 
