@@ -1,5 +1,4 @@
 # PhpSales
-
 This project is a simple PHP example that calculates sales taxes for shopping carts.
 It contains basic entity classes for items and a cart, along with services for parsing
 input lines, calculating taxes and formatting the output.
