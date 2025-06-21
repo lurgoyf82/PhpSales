@@ -1,5 +1,7 @@
 <?php
-spl_autoload_register(function ($class) {
+declare(strict_types=1);
+
+spl_autoload_register(function ($class): void {
     // Remove leading 'src\' if present
     if (strpos($class, 'src\\') === 0) {
         $class = substr($class, 4);

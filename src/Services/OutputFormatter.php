@@ -1,17 +1,21 @@
 <?php
+declare(strict_types=1);
+
 namespace src\Services;
+
 use src\Entities\Item;
+use src\Entities\Cart;
 
 class OutputFormatter
 {
 
-    private static function formatItem($item): string
+    private static function formatItem(Item $item): string
     {
         return $item->quantity.' '.$item->name.': '.
             number_format($item->taxedPrice, 2, '.', '');
     }
 
-    public static function printCart($cart): void
+    public static function printCart(Cart $cart): void
     {
         foreach ($cart->getItems() as $item) {
             $formattedOutput = self::formatItem($item);
