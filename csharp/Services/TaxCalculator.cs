@@ -1,3 +1,4 @@
+using System;
 using PhpSales.Entities;
 
 namespace PhpSales.Services
@@ -6,10 +7,10 @@ namespace PhpSales.Services
     {
         public static double CalculateTaxes(Item item)
         {
-            double taxes = (item.Price / 100.0) * item.TaxPercentage;
+            double taxes = (item.Price / 100) * item.TaxPercentage;
             if (taxes > 0)
             {
-                taxes = System.Math.Ceiling(taxes * 20) / 20;
+                taxes = Math.Ceiling(taxes * 20) / 20;
             }
             return taxes;
         }
