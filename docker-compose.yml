@@ -1,0 +1,8 @@
+services:
+  phpsales:
+    build: .
+    container_name: phpsales
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html

@@ -3,11 +3,12 @@ namespace src\Services;
 
 use src\Entities\Item;
 use src\Entities\Taxes;
+use src\Services\TaxCalculator;
 
 class InputParser
 {
-    private $text;
-    private $item;
+    private ?string $text;
+    private ?Item $item;
     private const ITEMTYPE = [
         'book' => 'book',
         'music CD' => 'other',
@@ -17,24 +18,20 @@ class InputParser
         'packet of headache pills' => 'medical_products'
     ];
 
-    public function __construct($text=null)
+    public function __construct(?string $text = null)
     {
         // $text puo essere null in fase di creazione dell'oggetto, non ritorna errore
         $this->text = $text;
         $this->item = null;
     }
 
-    public function setText($text=null) {
-        // in questo caso $test NON può essere null
-        if ($text === null) {
-            throw new \InvalidArgumentException("Input text cannot be null");
-        }
+    public function setText(string $text): void
+    {
         $this->text = $text;
         $this->item = null;
-
     }
 
-    public function parse($text = null): Item
+    public function parse(?string $text = null): Item
     {
         if ($text !== null) {
             $this->setText($text);
@@ -87,7 +84,8 @@ class InputParser
 
         // Tipo di item
         $item->itemType = self::ITEMTYPE[$text] ?? 'other';
-        $item->taxPercentage+= Taxes::{$item->itemType};
+
+        $item->taxPercentage += Taxes::{$item->itemType};
 
         // Calcolo le tasse
         $item->taxes = $item->quantity * (TaxCalculator::calculateTaxes($item));

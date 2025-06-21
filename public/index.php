@@ -37,22 +37,22 @@ $inputs=[
     $cartsNumber=1;
     foreach ($inputs as $input) {
 
-        echo "Input ".$cartsNumber.":<br //>\n";
+        echo "Input ".$cartsNumber.":<br />\n";
         $carts[$cartsNumber] = new Cart();
 
         foreach($inputs[$cartsNumber] as $input){
-            echo $input."<br //>\n";
+            echo $input."<br />\n";
             $carts[$cartsNumber]->addItem($inputParser->parse($input));
         }
 
-        echo "<br //>\n";
+        echo "<br />\n";
         $cartsNumber++;
     }
 
-    echo "OUTPUT<br //>\n";
+    echo "OUTPUT<br />\n";
 
     for($i=1;$i<$cartsNumber;$i++){
-        echo "<br //>\n";
-        echo "Output ".$i.":<br //>\n";
+        echo "<br />\n";
+        echo "Output ".$i.":<br />\n";
         OutputFormatter::printCart($carts[$i]);
     }

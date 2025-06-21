@@ -5,7 +5,7 @@ use src\Entities\Item;
 
 class TaxCalculator
 {
-    static function calculateTaxes(Item $item): float
+    public static function calculateTaxes(Item $item): float
     {
         $taxes = ($item->price / 100) * $item->taxPercentage;
 
