@@ -61,4 +61,21 @@ In the `public/index.php` file, you will find the following example input:
             '3 box of chocolates at 11.25'
         ]
     ];
- ```
+```
+
+## C# implementation
+
+The repository also contains an early C# version located in the `csharp` folder.
+You can build it with the following command:
+
+```bash
+dotnet build
+```
+
+Run the console project with:
+
+```bash
+dotnet run
+```
+
+The PHP version remains available for reference.
