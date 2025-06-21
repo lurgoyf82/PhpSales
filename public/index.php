@@ -1,7 +1,5 @@
 <?php
-declare(strict_types=1);
-
-    require_once __DIR__ . '/../vendor/autoload.php';
+    require_once __DIR__ . '/../src/autoloader.php';
 
     use src\Entities\Cart;
     use src\Services\InputParser;
