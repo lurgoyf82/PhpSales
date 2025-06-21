@@ -7,7 +7,10 @@ namespace PhpSales.Services
 {
     public class InputParser
     {
-        private static readonly Dictionary<string, string> ITEMTYPE = new()
+        private string? _text;
+        private Item? _item;
+
+        private static readonly Dictionary<string, string> ItemTypeMap = new()
         {
             {"book", "book"},
             {"music CD", "other"},
@@ -17,45 +20,64 @@ namespace PhpSales.Services
             {"packet of headache pills", "medical_products"}
         };
 
-        public Item Parse(string text)
+        public InputParser(string? text = null)
         {
-            if (string.IsNullOrWhiteSpace(text))
-                throw new ArgumentException("Input text cannot be null", nameof(text));
+            _text = text;
+            _item = null;
+        }
 
-            text = text.Trim();
+        public void SetText(string text)
+        {
+            _text = text;
+            _item = null;
+        }
 
-            int quantityEnd = text.IndexOf(' ');
-            var item = new Item();
-            item.Quantity = int.Parse(text.Substring(0, quantityEnd));
-
-            int atPos = text.LastIndexOf(" at ");
-            item.Price = double.Parse(text[(atPos + 4)..], CultureInfo.InvariantCulture);
-
-            string namePart = text.Substring(quantityEnd + 1, atPos - (quantityEnd + 1)).Trim();
-
-            int importedIndex = namePart.IndexOf("imported", StringComparison.Ordinal);
-            if (importedIndex >= 0)
+        public Item Parse(string? text = null)
+        {
+            if (text != null)
             {
-                item.Imported = true;
-                item.TaxPercentage = 5;
-                namePart = (namePart.Remove(importedIndex, "imported".Length)).Trim();
-                item.Name = $"imported {namePart}";
+                SetText(text);
             }
-            else
+
+            if (_item != null)
+            {
+                return _item!;
+            }
+
+            if (_text == null)
+            {
+                throw new ArgumentException("Input text cannot be null");
+            }
+
+            Item item = new();
+            string line = _text.Trim();
+
+            int firstSpace = line.IndexOf(' ');
+            item.Quantity = int.Parse(line.Substring(0, firstSpace));
+
+            int atPos = line.LastIndexOf("at", StringComparison.Ordinal);
+            item.Price = double.Parse(line.Substring(atPos + 2).Trim(), CultureInfo.InvariantCulture);
+
+            string description = line.Substring(firstSpace, atPos - firstSpace).Trim();
+
+            int importedIndex = description.IndexOf("imported", StringComparison.Ordinal);
+            if (importedIndex == -1)
             {
                 item.Imported = false;
                 item.TaxPercentage = 0;
-                item.Name = namePart;
+                item.Name = description;
             }
-
-            string typeKey = namePart;
-            if (!ITEMTYPE.TryGetValue(typeKey, out var itemType))
+            else
             {
-                itemType = "other";
+                item.Imported = true;
+                item.TaxPercentage = 5;
+                string withoutImported = (description.Substring(0, importedIndex) + " " + description.Substring(importedIndex + 8)).Trim();
+                item.Name = "imported " + withoutImported;
+                description = withoutImported;
             }
-            item.ItemType = itemType;
 
-            item.TaxPercentage += itemType switch
+            item.ItemType = ItemTypeMap.ContainsKey(description) ? ItemTypeMap[description] : "other";
+            item.TaxPercentage += item.ItemType switch
             {
                 "book" => Taxes.book,
                 "food" => Taxes.food,
@@ -66,7 +88,7 @@ namespace PhpSales.Services
             item.Taxes = item.Quantity * TaxCalculator.CalculateTaxes(item);
             item.TaxedPrice = (item.Quantity * item.Price) + item.Taxes;
 
-            return item;
+            _item = item;
+            return _item;
         }
     }
-}
